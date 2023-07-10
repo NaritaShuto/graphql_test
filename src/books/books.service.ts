@@ -1,55 +1,36 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Book } from './book/book';
 import { NewBookInput } from './dto/newBook.input';
-
-let books = [
-  {
-    id: 1,
-    title: 'test 1',
-    author: 'Joe',
-    price: 1000,
-    createdAt: new Date(),
-  },
-  {
-    id: 2,
-    title: 'test 2',
-    author: 'Maria',
-    price: 2000,
-    createdAt: new Date(),
-  },
-  {
-    id: 3,
-    title: 'test 3',
-    author: 'Smith',
-    price: 3000,
-    createdAt: new Date(),
-  },
-] as Book[];
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class BooksService {
-  findAll(): Promise<Book[]> {
-    return Promise.resolve(books);
+  constructor(
+    @Inject('BOOK_REPOSITORY')
+    private bookRepository: Repository<Book>,
+  ) {}
+
+  async findAll(): Promise<Book[]> {
+    return this.bookRepository.find();
   }
 
-  findOneById(id: number): Promise<Book> {
-    const book = books.find((book) => book.id === id);
-    return Promise.resolve(book);
+  async findOneById(id: number): Promise<Book> {
+    const allData = await this.bookRepository.find();
+    const values = allData.find(() => {
+      return (value: Book) => value.id === id;
+    });
+
+    return values;
   }
 
-  create(data: NewBookInput): Promise<Book> {
-    const book: Book = {
-      ...data,
-      id: Date.now(),
-      createdAt: new Date(),
-    };
-    books.push(book);
-
-    return Promise.resolve(book);
+  async create(data: NewBookInput): Promise<Book> {
+    const book = this.bookRepository.create(data);
+    await this.bookRepository.save(book);
+    return book;
   }
 
   async remove(id: number): Promise<boolean> {
-    books = books.filter((book) => book.id !== id);
-    return true;
+    const result = await this.bookRepository.delete(id);
+    return result.affected > 0;
   }
 }

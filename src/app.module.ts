@@ -8,8 +8,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { BooksModule } from './books/books.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Book } from './books/book';
+import { DatabaseModule } from 'lib/database/database.module';
 
 @Module({
   imports: [
@@ -17,17 +16,8 @@ import { Book } from './books/book';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'pass',
-      database: 'graphql_test',
-      entities: [Book],
-      synchronize: false,
-    }),
     BooksModule,
+    DatabaseModule,
   ],
   controllers: [AppController, AccountController],
   providers: [AppService, AccountService],
