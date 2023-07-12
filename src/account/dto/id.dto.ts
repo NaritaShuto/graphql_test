@@ -1,18 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { Field, InputType } from '@nestjs/graphql';
 
-export class UserIdForm {
-  @ApiProperty({
-    description: 'id',
-    example: 1,
-  })
-  readonly id: number;
-}
-
-export class UserList {
-  @ApiProperty({
-    description: 'UserList',
-    type: UserIdForm,
-    isArray: true,
-  })
-  readonly list: UserIdForm[];
+@InputType()
+export class AccountId {
+  @Field()
+  id: number;
 }

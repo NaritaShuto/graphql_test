@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { BooksResolver } from './books.resolver';
 import { BooksService } from './books.service';
-import { DatabaseModule } from 'lib/database/database.module';
-import { bookProviders } from 'lib/database/database.provider';
+import { DatabaseModule, bookProviders } from 'lib/database';
 
 @Module({
   imports: [DatabaseModule],
