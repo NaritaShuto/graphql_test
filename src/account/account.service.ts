@@ -36,16 +36,18 @@ export class AccountService {
   }
 
   // アカウント情報更新
-  async updateAccount(updateData: UpdateAccount) {
+  async updateAccount(updateData: UpdateAccount): Promise<AccountEntities> {
     const accountData = await this.findOneById(updateData.id);
-    const updateTime = new Date().getTime();
-    Object.assign(accountData, updateData, { updateTime: String(updateTime) });
+    const updateTime = new Date();
+    Object.assign(accountData, updateData, { updateTime: updateTime });
+    console.log(accountData);
     await this.accountRepository
       .createQueryBuilder()
       .update(AccountEntities)
       .set(accountData)
       .where('id = :id', { id: updateData.id })
       .execute();
+    return accountData;
   }
 
   // アカウント削除

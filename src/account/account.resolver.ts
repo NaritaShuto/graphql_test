@@ -20,14 +20,18 @@ export class AccountResolver {
 
   // アカウント追加
   @Mutation(() => AccountEntities)
-  async addAccount(@Args('account') account: AddAccount) {
+  async addAccount(
+    @Args('account') account: AddAccount,
+  ): Promise<AccountEntities> {
     return this.accountService.addAccount(account);
   }
 
   // アカウント更新（id + 更新したい項目）
   @Mutation(() => AccountEntities)
-  async updateAccount(@Args('updateData') updateData: UpdateAccount) {
-    await this.accountService.updateAccount(updateData);
+  async updateAccount(
+    @Args('updateData') updateData: UpdateAccount,
+  ): Promise<AccountEntities> {
+    return this.accountService.updateAccount(updateData);
   }
 
   // アカウント削除
