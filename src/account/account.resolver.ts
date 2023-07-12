@@ -7,12 +7,15 @@ import { AccountId, AddAccount, UpdateAccount } from './dto';
 export class AccountResolver {
   constructor(private readonly accountService: AccountService) {}
 
-  // 取得
+  @Query(() => [AccountEntities])
+  async getList(): Promise<AccountId[]> {
+    return this.accountService.findAll();
+  }
+
+  // idからユーザ情報取得
   @Query(() => AccountEntities)
-  async getAccount(
-    @Args('id') id?: number,
-  ): Promise<AccountId[] | AccountEntities> {
-    return this.accountService.findAccount(id);
+  async getAccount(@Args('id') id: number): Promise<AccountEntities> {
+    return this.accountService.findOneById(id);
   }
 
   // アカウント追加

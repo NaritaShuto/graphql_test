@@ -17,20 +17,13 @@ export class AccountService {
     return addData;
   }
 
-  async findAccount(id?: number): Promise<AccountId[] | AccountEntities> {
-    if (id) {
-      return this.findOneById(id);
-    }
-
-    return this.findAll();
-  }
-
   // ユーザIDリスト取得
   async findAll(): Promise<AccountId[]> {
     const data = await this.accountRepository.find();
     const result = data.map((value) => {
       return { id: value.id };
     });
+    console.log(result);
     return result;
   }
 
