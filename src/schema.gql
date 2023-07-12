@@ -2,7 +2,7 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type AccountEntities {
+type Account {
   id: ID!
   firstName: String!
   lastName: String!
@@ -26,16 +26,16 @@ type Book {
 type Query {
   books: [Book!]!
   getBook(id: Int!): Book!
-  getList: [AccountEntities!]!
-  getAccount(id: Float!): AccountEntities!
+  getId: [Account!]!
+  getAccount(id: Float!): Account!
 }
 
 type Mutation {
   addBook(newBook: NewBookInput!): Book!
   removeBook(id: Int!): Boolean!
-  addAccount(account: AddAccount!): AccountEntities!
-  updateAccount(updateData: UpdateAccount!): AccountEntities!
-  removeAccount(id: Float!): AccountEntities!
+  add(account: AddAccount!): Account!
+  update(updateData: UpdateAccount!): Account
+  remove(id: Float!): Account!
 }
 
 input NewBookInput {

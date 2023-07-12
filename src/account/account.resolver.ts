@@ -1,42 +1,41 @@
 import { Args, Int, Query, Resolver, Mutation } from '@nestjs/graphql';
 import { AccountService } from './account.service';
-import { AccountEntities } from './entities/account.entities';
+import { Account } from './entities/account.entities';
 import { AccountId, AddAccount, UpdateAccount } from './dto';
 
-@Resolver(() => AccountEntities)
+@Resolver(() => Account)
 export class AccountResolver {
   constructor(private readonly accountService: AccountService) {}
 
-  @Query(() => [AccountEntities])
+  @Query(() => [Account], { name: 'getId' })
   async getList(): Promise<AccountId[]> {
     return this.accountService.findAll();
   }
 
   // idからユーザ情報取得
-  @Query(() => AccountEntities)
-  async getAccount(@Args('id') id: number): Promise<AccountEntities> {
+  @Query(() => Account, { name: 'getAccount' })
+  async getAccount(@Args('id') id: number): Promise<Account> {
     return this.accountService.findOneById(id);
   }
 
   // アカウント追加
-  @Mutation(() => AccountEntities)
-  async addAccount(
-    @Args('account') account: AddAccount,
-  ): Promise<AccountEntities> {
+  @Mutation(() => Account, { name: 'add' })
+  async addAccount(@Args('account') account: AddAccount): Promise<Account> {
     return this.accountService.addAccount(account);
   }
 
   // アカウント更新（id + 更新したい項目）
-  @Mutation(() => AccountEntities)
+  @Mutation(() => Account, { name: 'update', nullable: true })
   async updateAccount(
     @Args('updateData') updateData: UpdateAccount,
-  ): Promise<AccountEntities> {
+  ): Promise<Account> {
     return this.accountService.updateAccount(updateData);
   }
 
   // アカウント削除
-  @Mutation(() => AccountEntities)
-  async removeAccount(@Args('id') id: number) {
+  @Mutation(() => Account, { name: 'remove' })
+  async removeAccount(@Args('id') id: number): Promise<AccountId> {
     await this.accountService.removeAccount(id);
+    return { id: id };
   }
 }

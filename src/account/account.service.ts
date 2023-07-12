@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { AccountEntities } from './entities/account.entities';
+import { Account } from './entities/account.entities';
 import { Repository } from 'typeorm';
 import { AccountId, AddAccount, UpdateAccount } from './dto';
 
@@ -7,11 +7,11 @@ import { AccountId, AddAccount, UpdateAccount } from './dto';
 export class AccountService {
   constructor(
     @Inject('ACCOUNT_REPOSITORY')
-    private accountRepository: Repository<AccountEntities>,
+    private accountRepository: Repository<Account>,
   ) {}
 
   // ユーザ追加
-  async addAccount(account: AddAccount): Promise<AccountEntities> {
+  async addAccount(account: AddAccount): Promise<Account> {
     const addData = this.accountRepository.create(account);
     await this.accountRepository.save(addData);
     return addData;
@@ -28,7 +28,7 @@ export class AccountService {
   }
 
   // IDからユーザ情報取得
-  async findOneById(id: number): Promise<AccountEntities> {
+  async findOneById(id: number): Promise<Account> {
     const result = await this.accountRepository.findOne({
       where: [{ id: id }],
     });
@@ -36,14 +36,14 @@ export class AccountService {
   }
 
   // アカウント情報更新
-  async updateAccount(updateData: UpdateAccount): Promise<AccountEntities> {
+  async updateAccount(updateData: UpdateAccount): Promise<Account> {
     const accountData = await this.findOneById(updateData.id);
     const updateTime = new Date();
     Object.assign(accountData, updateData, { updateTime: updateTime });
     console.log(accountData);
     await this.accountRepository
       .createQueryBuilder()
-      .update(AccountEntities)
+      .update(Account)
       .set(accountData)
       .where('id = :id', { id: updateData.id })
       .execute();
@@ -52,6 +52,7 @@ export class AccountService {
 
   // アカウント削除
   async removeAccount(id: number) {
+    console.log('call remove');
     await this.accountRepository.delete(id);
   }
 }
